@@ -1,7 +1,7 @@
 name: CI
 
 # trigger
-on: 
+on:
   push:
     branches:
       - main
@@ -10,14 +10,17 @@ jobs:
   build:
     name: "Build and Push"
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [18, 20]
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup node
+      - name: Setup node | ${{ matrix.node }}
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: 'yarn'
+          node-version: ${{ matrix.node }}
+          cache: "yarn"
       - run: yarn
       - run: yarn run test
