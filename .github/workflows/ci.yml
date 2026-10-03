@@ -1,5 +1,11 @@
 name: CI
 
+# trigger
+on: 
+  push:
+    branches:
+      - main
+
 jobs:
   build:
     name: "Build and Push"
