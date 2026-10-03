@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [18, 20]
+        node: [22]
 
     steps:
       - uses: actions/checkout@v4
@@ -24,3 +24,13 @@ jobs:
           cache: "yarn"
       - run: yarn
       - run: yarn run test
+
+      # Pega os 7 primeiros caracteres do hash do commit.
+      - name: Generate tag
+        id: generate_tag
+        run: |
+          SHA=$(echo $GITHUB_SHA | head -c7)
+          echo "Sha=$SHA" >> $GITHUB_OUTPUT
+
+      - name: Build docker image
+        run: docker build -t rocketseat-ci-api:${{ steps.generate_tag.outputs.sha }} .
