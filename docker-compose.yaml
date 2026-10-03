@@ -1,0 +1,35 @@
+version: '3.7'
+
+services:
+  mysql: 
+    container_name: mysql
+    image: mysql:8
+    environment:
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=root
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=rocketseat-db
+    ports:
+      - 3306:3306
+    networks:
+      - net1
+    volumes: db:/var/lib/mysql
+
+  api-rocket:
+    container_name: api-rocket
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3001:3000
+    depends_on:
+      - mysql
+    networks:
+      - net1
+
+networks:
+  net1:
+    driver: bridge
+
+volumes: 
+  db: 
