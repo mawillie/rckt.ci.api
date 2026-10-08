@@ -32,5 +32,14 @@ jobs:
           SHA=$(echo $GITHUB_SHA | head -c7)
           echo "Sha=$SHA" >> $GITHUB_OUTPUT
 
+      - name: Login into the container registry
+        uses: docker/login-action@v4
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: Build docker image
         run: docker build -t rocketseat-ci-api:${{ steps.generate_tag.outputs.sha }} .
+
+      - name: Push image
+        run: docker push mawilee/rocketseat-ci-api:${{ steps.generate_tag.outputs.sha }}
