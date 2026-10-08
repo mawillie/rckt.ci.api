@@ -10,17 +10,18 @@ jobs:
   build:
     name: "Build and Push"
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node: [22]
+    # strategy:
+    #   matrix:
+    #     node: [22]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Setup node | ${{ matrix.node }}
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node }}
+          # node-version: ${{ matrix.node }}
+          node-version: 22
           cache: "yarn"
       - run: yarn
       - run: yarn run test
@@ -38,8 +39,14 @@ jobs:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build docker image
-        run: docker build -t mawilee/rocketseat-ci-api:${{ steps.generate_tag.outputs.sha }} .
+      - name: Build and push
+        uses: docker/build-push-action@v7
+        with:
+          push: true
+          tags: mawilee/rocketseat-ci-api:${{ steps.generate_tag.outputs.sha }},mawilee/rocketseat-ci-api:latest
 
-      - name: Push image
-        run: docker push mawilee/rocketseat-ci-api:${{ steps.generate_tag.outputs.sha }}
+      # - name: Build docker image
+      #   run: docker build -t mawilee/rocketseat-ci-api:${{ steps.generate_tag.outputs.sha }} .
+
+      # - name: Push image
+      #   run: docker push mawilee/rocketseat-ci-api:${{ steps.generate_tag.outputs.sha }}
